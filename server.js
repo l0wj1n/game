@@ -276,6 +276,23 @@ app.post('/api/contributions/:id/approve', (req, res) => {
     // Remove from contributions
     db.contributions.splice(index, 1);
     
+    // Persist questions to QUESTIONS_PATH
+    try {
+      const questionsData = JSON.parse(fs.readFileSync(QUESTIONS_PATH, 'utf8'));
+      const questionsArray = Array.isArray(questionsData) ? questionsData : questionsData.questions || [];
+      questionsArray.push(contribution);
+      fs.writeFileSync(QUESTIONS_PATH, JSON.stringify({ questions: questionsArray }, null, 2));
+    } catch (error) {
+      console.error('Error updating questions.json on approve:', error);
+    }
+
+    // Persist contributions to CONTRIBUTIONS_PATH
+    try {
+      fs.writeFileSync(CONTRIBUTIONS_PATH, JSON.stringify({ contributions: db.contributions }, null, 2));
+    } catch (error) {
+      console.error('Error updating contributions.json on approve:', error);
+    }
+
     writeDatabase(db);
     res.json({ success: true, message: 'Câu hỏi đã được duyệt' });
   } else {
@@ -291,6 +308,12 @@ app.delete('/api/contributions/:id', (req, res) => {
   const index = db.contributions.findIndex(c => c.id === id);
   if (index !== -1) {
     db.contributions.splice(index, 1);
+    // Persist contributions file as well
+    try {
+      fs.writeFileSync(CONTRIBUTIONS_PATH, JSON.stringify({ contributions: db.contributions }, null, 2));
+    } catch (error) {
+      console.error('Error updating contributions.json on delete:', error);
+    }
     writeDatabase(db);
     res.json({ success: true, message: 'Đóng góp đã được xóa' });
   } else {
