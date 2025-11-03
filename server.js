@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 
 const app = express();
+const PORT = 3000;
 
 // Middleware
 app.use(bodyParser.json());
@@ -414,4 +415,8 @@ app.put('/api/admin/settings', (req, res) => {
         message: 'Cập nhật cài đặt thành công!',
         settings: db.settings
     });
+});
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
