@@ -1,10 +1,19 @@
-
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 
+const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+// Database file path
 const DB_PATH = path.join(__dirname, 'database.json');
 
+// Email configuration
 const emailTransporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
