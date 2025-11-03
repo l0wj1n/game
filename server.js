@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 
+// Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
