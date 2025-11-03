@@ -1,0 +1,10 @@
+{
+  "notification": {
+    "active": true,
+    "title": "Chào mừng đến với Quiz Game!",
+    "content": "Hãy thử thách kiến thức của bạn.",
+    "image": "",
+    "type": "info",
+    "duration": 0
+  }
+}

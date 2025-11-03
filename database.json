@@ -1,0 +1,242 @@
+{
+  "questions": [
+    {
+      "id": "1",
+      "question": "Theo chủ nghĩa Mác – Lênin, nhận thức là gì?",
+      "answers": [
+        "Quá trình con người sao chép lại thế giới khách quan.",
+        "Quá trình con người phản ánh thế giới khách quan một cách năng động, sáng tạo.",
+        "Quá trình tái hiện thế giới bằng tưởng tượng.",
+        "Quá trình học tập và ghi nhớ thông tin."
+      ],
+      "correctAnswer": "B",
+      "explanation": "Theo chủ nghĩa Mác – Lênin, nhận thức là quá trình con người phản ánh thế giới khách quan một cách năng động, sáng tạo. Khác với quan niệm sao chép thụ động, nhận thức là hoạt động tích cực của con người trong việc tái tạo hiện thực khách quan vào trong óc người, có tính chủ động và sáng tạo.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "2",
+      "question": "Chủ thể của nhận thức là gì?",
+      "answers": [
+        "Thế giới vật chất khách quan.",
+        "Tự nhiên và xã hội.",
+        "Con người xã hội có tư duy, mục đích.",
+        "Con người cá nhân biệt lập."
+      ],
+      "correctAnswer": "C",
+      "explanation": "Chủ thể của nhận thức là con người xã hội có tư duy, mục đích. Chủ thể nhận thức không phải là cá nhân biệt lập mà là con người trong mối quan hệ xã hội, có khả năng tư duy và hoạt động có mục đích.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "3",
+      "question": "Khách thể của nhận thức là gì?",
+      "answers": [
+        "Con người.",
+        "Thế giới vật chất khách quan.",
+        "Tư duy của con người.",
+        "Các hiện tượng xã hội."
+      ],
+      "correctAnswer": "B",
+      "explanation": "Khách thể của nhận thức là thế giới vật chất khách quan - bao gồm tự nhiên và xã hội. Đây là đối tượng mà nhận thức hướng tới để phản ánh và tìm hiểu.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "4",
+      "question": "Nhận thức có tính sáng tạo vì:",
+      "answers": [
+        "Con người biết lặp lại tri thức có sẵn.",
+        "Con người có thể hình dung cái chưa có trong tự nhiên.",
+        "Con người chỉ dựa vào kinh nghiệm.",
+        "Con người không thể thay đổi tự nhiên."
+      ],
+      "correctAnswer": "B",
+      "explanation": "Nhận thức có tính sáng tạo vì con người có thể hình dung, tưởng tượng, thiết kế và tạo ra những cái chưa có trong tự nhiên. Đây là đặc điểm nổi bật của nhận thức con người, khác với phản ánh thụ động.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "5",
+      "question": "Nhận thức là một quá trình:",
+      "answers": [
+        "Tĩnh tại, bất biến.",
+        "Mang tính cá nhân thuần túy.",
+        "Xã hội – lịch sử, phát triển và vận động không ngừng.",
+        "Phụ thuộc hoàn toàn vào cảm giác."
+      ],
+      "correctAnswer": "C",
+      "explanation": "Nhận thức là một quá trình xã hội – lịch sử, phát triển và vận động không ngừng. Nhận thức không phải là tĩnh tại mà luôn phát triển cùng với sự phát triển của xã hội và lịch sử.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "6",
+      "question": "Giai đoạn 1 của quá trình nhận thức là:",
+      "answers": [
+        "Nhận thức cảm tính.",
+        "Nhận thức lý tính.",
+        "Nhận thức thực tiễn.",
+        "Nhận thức kinh nghiệm."
+      ],
+      "correctAnswer": "A",
+      "explanation": "Giai đoạn 1 của quá trình nhận thức là nhận thức cảm tính. Đây là giai đoạn đầu tiên, con người tiếp xúc trực tiếp với thế giới khách quan thông qua các giác quan.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "7",
+      "question": "Đặc trưng của nhận thức cảm tính là:",
+      "answers": [
+        "Phản ánh thuộc tính bên trong.",
+        "Phản ánh thuộc tính bề ngoài của sự vật.",
+        "Phản ánh bản chất của sự vật.",
+        "Không có tính hiện thực."
+      ],
+      "correctAnswer": "B",
+      "explanation": "Đặc trưng của nhận thức cảm tính là phản ánh thuộc tính bề ngoài của sự vật thông qua cảm giác, tri giác và biểu tượng. Đây là bước đầu tiên trong quá trình nhận thức.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "8",
+      "question": "Nhận thức lý tính là quá trình:",
+      "answers": [
+        "Tiếp xúc với thế giới qua giác quan.",
+        "Khái quát, phân tích, suy luận từ dữ liệu cảm tính.",
+        "Thực hành để kiểm nghiệm tri thức.",
+        "Tái hiện cảm giác và tri giác."
+      ],
+      "correctAnswer": "B",
+      "explanation": "Nhận thức lý tính là quá trình khái quát, phân tích, suy luận từ dữ liệu cảm tính để tìm ra bản chất, quy luật của sự vật, hiện tượng. Đây là giai đoạn cao hơn của nhận thức.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "9",
+      "question": "Giai đoạn nhận thức thứ ba là:",
+      "answers": [
+        "Cảm tính.",
+        "Lý tính.",
+        "Thực tiễn.",
+        "Trực giác."
+      ],
+      "correctAnswer": "C",
+      "explanation": "Giai đoạn nhận thức thứ ba là thực tiễn. Sau nhận thức cảm tính và lý tính, nhận thức được đưa vào thực tiễn để kiểm nghiệm tính đúng đắn và vận dụng vào cải tạo thế giới.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "10",
+      "question": "Thực tiễn có vai trò gì đối với nhận thức?",
+      "answers": [
+        "Là nguồn gốc, động lực, mục đích và tiêu chuẩn của nhận thức.",
+        "Là kết quả cuối cùng của nhận thức.",
+        "Là yếu tố phụ trong hoạt động nhận thức.",
+        "Không ảnh hưởng đến nhận thức."
+      ],
+      "correctAnswer": "A",
+      "explanation": "Thực tiễn có vai trò toàn diện đối với nhận thức: là nguồn gốc (cung cấp chất liệu), động lực (thúc đẩy phát triển), mục đích (vì thực tiễn mà nhận thức) và tiêu chuẩn (kiểm nghiệm chân lý).",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "11",
+      "question": "Thực tiễn cung cấp cho nhận thức điều gì?",
+      "answers": [
+        "Tư duy logic.",
+        "Cảm xúc và động cơ.",
+        "Chất liệu, dữ liệu, kinh nghiệm.",
+        "Hệ thống ngôn ngữ."
+      ],
+      "correctAnswer": "C",
+      "explanation": "Thực tiễn cung cấp cho nhận thức chất liệu, dữ liệu và kinh nghiệm. Thông qua hoạt động thực tiễn, con người tiếp xúc với thế giới khách quan và thu nhận thông tin cần thiết cho nhận thức.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "12",
+      "question": "Mối quan hệ giữa thực tiễn và nhận thức là:",
+      "answers": [
+        "Thực tiễn quyết định nhận thức, nhận thức tác động trở lại thực tiễn.",
+        "Nhận thức quyết định thực tiễn.",
+        "Không có mối quan hệ.",
+        "Tồn tại song song nhưng độc lập."
+      ],
+      "correctAnswer": "A",
+      "explanation": "Mối quan hệ giữa thực tiễn và nhận thức là mối quan hệ biện chứng: thực tiễn quyết định nhận thức, đồng thời nhận thức tác động trở lại thực tiễn, hướng dẫn và cải tạo thực tiễn.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "13",
+      "question": "Tiêu chuẩn duy nhất, khách quan của chân lý là:",
+      "answers": [
+        "Lý luận.",
+        "Thực tiễn.",
+        "Kinh nghiệm.",
+        "Cảm giác."
+      ],
+      "correctAnswer": "B",
+      "explanation": "Tiêu chuẩn duy nhất, khách quan của chân lý là thực tiễn. Chỉ có thông qua thực tiễn, con người mới có thể kiểm nghiệm tính đúng đắn của nhận thức một cách khách quan.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "14",
+      "question": "Mục đích cuối cùng của nhận thức là:",
+      "answers": [
+        "Thu thập tri thức.",
+        "Hành động, cải tạo thế giới.",
+        "Tăng khả năng tư duy.",
+        "Phát triển cá nhân."
+      ],
+      "correctAnswer": "B",
+      "explanation": "Mục đích cuối cùng của nhận thức là hành động, cải tạo thế giới. Nhận thức không chỉ để hiểu biết mà còn để vận dụng vào thực tiễn, cải tạo tự nhiên và xã hội.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    },
+    {
+      "id": "15",
+      "question": "Theo chủ nghĩa Mác – Lênin, quá trình nhận thức diễn ra theo quy luật:",
+      "answers": [
+        "Vòng tròn khép kín.",
+        "Đường thẳng tuyến tính.",
+        "Vòng xoáy ốc, không ngừng phát triển.",
+        "Lặp lại không thay đổi."
+      ],
+      "correctAnswer": "C",
+      "explanation": "Theo chủ nghĩa Mác – Lênin, quá trình nhận thức diễn ra theo quy luật vòng xoáy ốc, không ngừng phát triển. Nhận thức từ thấp đến cao, từ đơn giản đến phức tạp, không ngừng phát triển và hoàn thiện.",
+      "explanationVideo": "",
+      "explanationImage": ""
+    }
+  ],
+  "contributions": [],
+  "rankings": [
+    {
+      "name": "Người Mới",
+      "score": 833,
+      "time": 117,
+      "correct": 5,
+      "total": 15,
+      "difficulty": "normal",
+      "id": "1762156513689",
+      "timestamp": "2025-11-03T07:55:13.691Z",
+      "ip": "::1"
+    }
+  ],
+  "settings": {
+    "notification": {
+      "active": true,
+      "title": "Chào mừng đến với Quiz Game!",
+      "content": "Hãy thử thách kiến thức của bạn.",
+      "image": "",
+      "type": "info",
+      "duration": 0
+    }
+  },
+  "admin": {
+    "username": "admin",
+    "password": "admin123"
+  }
+}

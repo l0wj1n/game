@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game - Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🎯 Quiz Game Admin</h1>
+                <p>Đăng nhập để quản lý hệ thống</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Tên đăng nhập:</label>
+                    <input type="text" id="username" required placeholder="Nhập tên đăng nhập">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mật khẩu:</label>
+                    <input type="password" id="password" required placeholder="Nhập mật khẩu">
+                </div>
+                <button type="submit" class="btn btn-primary btn-login">
+                    <span class="btn-icon">🔐</span>
+                    Đăng nhập
+                </button>
+                <div class="login-info">
+                    <p><strong>Thông tin mặc định:</strong></p>
+                    <p>Username: <code>admin</code></p>
+                    <p>Password: <code>admin123</code></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="screen">
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>🎯 Quiz Game Admin</h1>
+                    <span class="admin-badge">Quản trị viên</span>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary btn-logout">
+                    <span class="btn-icon">🚪</span>
+                    Đăng xuất
+                </button>
+            </div>
+        </header>
+        
+        <nav class="admin-nav">
+            <div class="nav-container">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <span class="nav-icon">📊</span>
+                    Tổng quan
+                </button>
+                <button class="nav-btn" data-tab="questions">
+                    <span class="nav-icon">❓</span>
+                    Quản lý câu hỏi
+                </button>
+                <button class="nav-btn" data-tab="contributions">
+                    <span class="nav-icon">📨</span>
+                    Đóng góp
+                    <span class="badge" id="contributions-badge">0</span>
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <span class="nav-icon">⚙️</span>
+                    Cài đặt
+                </button>
+            </div>
+        </nav>
+        
+        <main class="admin-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="tab-header">
+                    <h2>📊 Tổng quan hệ thống</h2>
+                    <p class="tab-subtitle">Thống kê và hoạt động gần đây</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">❓</div>
+                        <div class="stat-info">
+                            <h3>Tổng số câu hỏi</h3>
+                            <div id="total-questions" class="stat-number">0</div>
+                            <div class="stat-trend">Tất cả độ khó</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>Tổng số người chơi</h3>
+                            <div id="total-players" class="stat-number">0</div>
+                            <div class="stat-trend">Người chơi duy nhất</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📨</div>
+                        <div class="stat-info">
+                            <h3>Đóng góp chờ duyệt</h3>
+                            <div id="total-contributions" class="stat-number">0</div>
+                            <div class="stat-trend">Cần xử lý</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎮</div>
+                        <div class="stat-info">
+                            <h3>Tổng lượt chơi</h3>
+                            <div id="total-rankings" class="stat-number">0</div>
+                            <div class="stat-trend">Lượt chơi thành công</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>📈 Hoạt động gần đây</h3>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">🔄</div>
+                            <div class="activity-content">
+                                <p>Hệ thống đang chạy ổn định</p>
+                                <span class="activity-time">Vừa xong</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Questions Tab -->
+            <div id="questions-tab" class="tab-content">
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <h2>❓ Quản lý câu hỏi</h2>
+                        <p class="tab-subtitle">Thêm, sửa, xóa câu hỏi và chỉnh sửa giải thích, video, ảnh</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="skip-to-last-btn" class="btn btn-warning" style="margin-right: 10px;">
+                            <span class="btn-icon">⏭️</span>
+                            Bỏ Qua Đến Câu Cuối
+                        </button>
+                        <button id="add-question-btn" class="btn btn-primary">
+                            <span class="btn-icon">➕</span>
+                            Thêm câu hỏi
+                        </button>
+                    </div>
+                </div>
+
+                <div class="questions-actions">
+                    <div class="search-box">
+                        <input type="text" id="question-search" placeholder="🔍 Tìm kiếm câu hỏi...">
+                    </div>
+                </div>
+
+                <div class="questions-list" id="questions-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <h3>Chưa có câu hỏi nào</h3>
+                        <p>Bắt đầu bằng cách thêm câu hỏi đầu tiên vào hệ thống</p>
+                        <button class="btn btn-primary" onclick="openQuestionModal()">
+                            <span class="btn-icon">➕</span>
+                            Thêm câu hỏi đầu tiên
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contributions Tab -->
+            <div id="contributions-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2>📨 Đóng góp từ người chơi</h2>
+                    <p class="tab-subtitle">Duyệt hoặc xóa các câu hỏi được đóng góp</p>
+                </div>
+
+                <div class="contributions-actions">
+                    <div class="contributions-info">
+                        <span class="info-text">Có <strong id="pending-count">0</strong> đóng góp đang chờ duyệt</span>
+                    </div>
+                </div>
+
+                <div class="contributions-list" id="contributions-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">🎉</div>
+                        <h3>Không có đóng góp nào</h3>
+                        <p>Tất cả đóng góp đã được xử lý</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2>⚙️ Cài đặt thông báo</h2>
+                    <p class="tab-subtitle">Tùy chỉnh thông báo chào mừng cho người chơi</p>
+                </div>
+                
+                <div class="settings-container">
+                    <div class="settings-form-section">
+                        <h3>📢 Cấu hình thông báo</h3>
+                        <form id="notification-settings-form">
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="notification-active">
+                                    <span class="checkmark"></span>
+                                    Hiển thị thông báo chào mừng
+                                </label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notification-title">Tiêu đề:</label>
+                                <input type="text" id="notification-title" placeholder="Nhập tiêu đề thông báo">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notification-content">Nội dung:</label>
+                                <textarea id="notification-content" placeholder="Nhập nội dung thông báo (có thể xuống dòng)" rows="4"></textarea>
+                                <small class="form-text">Sử dụng Enter để xuống dòng</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notification-image">URL ảnh (tùy chọn):</label>
+                                <input type="text" id="notification-image" placeholder="https://example.com/image.jpg">
+                                <small class="form-text">Để trống nếu không muốn hiển thị ảnh</small>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="notification-type">Kiểu thông báo:</label>
+                                    <select id="notification-type">
+                                        <option value="info">💡 Thông tin</option>
+                                        <option value="success">✅ Thành công</option>
+                                        <option value="warning">⚠️ Cảnh báo</option>
+                                        <option value="error">❌ Lỗi</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="notification-duration">Thời gian hiển thị (giây):</label>
+                                    <input type="number" id="notification-duration" min="0" max="60" value="0">
+                                    <small class="form-text">0 = không tự động tắt</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="btn-icon">💾</span>
+                                    Lưu cài đặt
+                                </button>
+                                <button type="button" id="preview-notification" class="btn btn-secondary">
+                                    <span class="btn-icon">👁️</span>
+                                    Xem trước
+                                </button>
+                                <button type="button" id="reset-settings" class="btn btn-outline">
+                                    <span class="btn-icon">🔄</span>
+                                    Đặt lại
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <h3>👁️ Xem trước thông báo</h3>
+                        <div class="preview-container">
+                            <div id="notification-preview" class="notification-preview">
+                                <div class="preview-disabled">
+                                    <div class="preview-icon">🔕</div>
+                                    <h4>Thông báo đang tắt</h4>
+                                    <p>Người chơi sẽ không thấy thông báo này khi vào game</p>
+                                </div>
+                            </div>
+                            <div class="preview-note">
+                                <p>💡 <strong>Lưu ý:</strong> Đây là bản xem trước. Thông báo thực tế sẽ hiển thị toàn màn hình.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Question Modal -->
+    <div id="question-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Thêm câu hỏi mới</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="question-form">
+                <input type="hidden" id="question-id">
+                <div class="form-group">
+                    <label for="modal-question">Câu hỏi:</label>
+                    <textarea id="modal-question" required placeholder="Nhập nội dung câu hỏi..."></textarea>
+                </div>
+                <div class="answer-options">
+                    <div class="form-group">
+                        <label for="modal-answer-a" class="answer-label">
+                            <span class="answer-letter">A</span>
+                            Đáp án A:
+                        </label>
+                        <input type="text" id="modal-answer-a" required placeholder="Nhập đáp án A">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-answer-b" class="answer-label">
+                            <span class="answer-letter">B</span>
+                            Đáp án B:
+                        </label>
+                        <input type="text" id="modal-answer-b" required placeholder="Nhập đáp án B">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-answer-c" class="answer-label">
+                            <span class="answer-letter">C</span>
+                            Đáp án C:
+                        </label>
+                        <input type="text" id="modal-answer-c" required placeholder="Nhập đáp án C">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-answer-d" class="answer-label">
+                            <span class="answer-letter">D</span>
+                            Đáp án D:
+                        </label>
+                        <input type="text" id="modal-answer-d" required placeholder="Nhập đáp án D">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modal-correct-answer">Đáp án đúng:</label>
+                        <select id="modal-correct-answer" required>
+                            <option value="">Chọn đáp án đúng</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="modal-explanation">Giải thích chi tiết:</label>
+                    <textarea id="modal-explanation" placeholder="Nhập giải thích chi tiết cho câu hỏi này..."></textarea>
+                    <small class="form-text">Giải thích sẽ hiển thị sau khi người chơi trả lời</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modal-explanation-video">Video giải thích (URL hoặc đường dẫn):</label>
+                        <input type="text" id="modal-explanation-video" placeholder="assets/videos/explanation1.mp4 hoặc https://...">
+                        <small class="form-text">Đường dẫn tương đối từ public/ hoặc URL đầy đủ</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-explanation-image">Ảnh giải thích (URL hoặc đường dẫn):</label>
+                        <input type="text" id="modal-explanation-image" placeholder="assets/images/explanation1.jpg hoặc https://...">
+                        <small class="form-text">Đường dẫn tương đối từ public/ hoặc URL đầy đủ</small>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon">💾</span>
+                        Lưu câu hỏi
+                    </button>
+                    <button type="button" class="btn btn-secondary modal-cancel">
+                        <span class="btn-icon">❌</span>
+                        Hủy
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚠️ Xác nhận xóa</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-icon">🗑️</div>
+                <p>Bạn có chắc chắn muốn xóa câu hỏi này?</p>
+                <p class="warning-text">Hành động này không thể hoàn tác!</p>
+            </div>
+            <div class="modal-actions">
+                <button id="confirm-delete" class="btn btn-danger">
+                    <span class="btn-icon">🗑️</span>
+                    Xóa
+                </button>
+                <button class="btn btn-secondary modal-cancel">
+                    <span class="btn-icon">↩️</span>
+                    Hủy
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

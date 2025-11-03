@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hành Trình Triết Học - RPG Quiz Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/rpg-style.css">
+</head>
+<body>
+    <!-- Video Background -->
+    <video id="video-background" autoplay muted loop playsinline>
+        <source src="intro_triet.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- Particle Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen active">
+        <div class="loading-container">
+            <div class="rpg-loader">
+                <div class="spell-circle"></div>
+                <h2 class="glowing-text">Đang khởi tạo thế giới...</h2>
+                <div class="loading-bar-container">
+                    <div class="loading-bar" id="loading-progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intro Story Screen -->
+    <div id="intro-screen" class="screen">
+        <div class="story-container">
+            <div class="story-content">
+                <h1 class="story-title">HÀNH TRÌNH TRIẾT HỌC</h1>
+                <div class="story-text">
+                    <p class="typing-text">Trong một thế giới nơi tri thức là sức mạnh, bạn là một học giả trẻ đang tìm kiếm chân lý, những tri thức mới để mở rộng tầm hiểu biết của mình...</p>
+                    <p class="typing-text">Con đường của bạn sẽ đầy thử thách với 15 câu hỏi và những thách thức về chủ nghĩa Mác – Lênin.</p>
+                    <p class="typing-text">Mỗi câu trả lời đúng sẽ mang lại cho bạn kinh nghiệm và sức mạnh.</p>
+                    <p class="typing-text">Hãy chứng minh bạn xứng đáng với danh hiệu <strong>Bậc Thầy Triết Học</strong>!</p>
+                </div>
+                <button id="start-journey-btn" class="btn btn-hero">Bắt Đầu Hành Trình</button>
+                <button id="theme-selector-btn" class="btn btn-theme">🎨 Chọn Màu Sắc</button>
+                <button id="contribute-btn" class="btn btn-secondary" style="margin-top: 15px;">📝 Đóng Góp Câu Hỏi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Selector Modal -->
+    <div id="theme-modal" class="theme-modal">
+        <div class="theme-modal-content">
+            <div class="theme-modal-header">
+                <h2>Chọn Màu Sắc Game</h2>
+                <button class="theme-close" id="close-theme-modal">×</button>
+            </div>
+            <div class="theme-grid">
+                <div class="theme-option" data-theme="pink-blue">
+                    <div class="theme-preview pink-blue-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #EC4899;"></span>
+                            <span class="color-dot" style="background: #3B82F6;"></span>
+                        </div>
+                        <div class="theme-name">Hồng - Xanh</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="purple-gold">
+                    <div class="theme-preview purple-gold-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #8B5CF6;"></span>
+                            <span class="color-dot" style="background: #F59E0B;"></span>
+                        </div>
+                        <div class="theme-name">Tím - Vàng</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="green-cyan">
+                    <div class="theme-preview green-cyan-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #10B981;"></span>
+                            <span class="color-dot" style="background: #06B6D4;"></span>
+                        </div>
+                        <div class="theme-name">Xanh Lá - Xanh Dương</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="red-orange">
+                    <div class="theme-preview red-orange-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #EF4444;"></span>
+                            <span class="color-dot" style="background: #F97316;"></span>
+                        </div>
+                        <div class="theme-name">Đỏ - Cam</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="blue-purple">
+                    <div class="theme-preview blue-purple-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #3B82F6;"></span>
+                            <span class="color-dot" style="background: #8B5CF6;"></span>
+                        </div>
+                        <div class="theme-name">Xanh - Tím</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="yellow-pink">
+                    <div class="theme-preview yellow-pink-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #FBBF24;"></span>
+                            <span class="color-dot" style="background: #EC4899;"></span>
+                        </div>
+                        <div class="theme-name">Vàng - Hồng</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="professional-blue">
+                    <div class="theme-preview professional-blue-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #2563EB;"></span>
+                            <span class="color-dot" style="background: #3B82F6;"></span>
+                        </div>
+                        <div class="theme-name">Xanh Chuyên Nghiệp</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="elegant-purple">
+                    <div class="theme-preview elegant-purple-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #7C3AED;"></span>
+                            <span class="color-dot" style="background: #8B5CF6;"></span>
+                        </div>
+                        <div class="theme-name">Tím Thanh Lịch</div>
+                    </div>
+                </div>
+                <div class="theme-option" data-theme="fresh-green">
+                    <div class="theme-preview fresh-green-theme">
+                        <div class="theme-colors">
+                            <span class="color-dot" style="background: #059669;"></span>
+                            <span class="color-dot" style="background: #10B981;"></span>
+                        </div>
+                        <div class="theme-name">Xanh Tươi Mới</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Creation Screen -->
+    <div id="character-screen" class="screen">
+        <div class="character-container">
+            <h2 class="section-title">Tạo Nhân Vật Của Bạn</h2>
+            <div class="character-creation">
+                <div class="character-visual">
+                    <div class="character-avatar" id="character-preview">
+                        <div class="avatar-circle">🧙‍♂️</div>
+                    </div>
+                    <div class="character-classes">
+                        <button class="class-btn active" data-class="scholar" data-emoji="🧙‍♂️">
+                            <span class="class-emoji">🧙‍♂️</span>
+                            <span class="class-name">Học Giả</span>
+                        </button>
+                        <button class="class-btn" data-class="philosopher" data-emoji="🎓">
+                            <span class="class-emoji">🎓</span>
+                            <span class="class-name">Triết Gia</span>
+                        </button>
+                        <button class="class-btn" data-class="warrior" data-emoji="⚔️">
+                            <span class="class-emoji">⚔️</span>
+                            <span class="class-name">Chiến Binh</span>
+                        </button>
+                        <button class="class-btn" data-class="sage" data-emoji="🔮">
+                            <span class="class-emoji">🔮</span>
+                            <span class="class-name">Hiền Triết</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="character-form">
+                <div class="form-group">
+                        <label for="player-name">Tên nhân vật:</label>
+                        <input type="text" id="player-name" placeholder="Nhập tên của bạn..." maxlength="20" autocomplete="off">
+                    </div>
+                    <div class="character-stats-preview">
+                        <div class="stat-item">
+                            <span class="stat-label">Sức Mạnh:</span>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Trí Tuệ:</span>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Kinh Nghiệm:</span>
+                            <div class="stat-bar">
+                                <div class="stat-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                </div>
+                    <button id="begin-game-btn" class="btn btn-hero">Bắt Đầu Phiêu Lưu</button>
+                </div>
+                </div>
+        </div>
+    </div>
+
+    <!-- Game Combat Screen -->
+    <div id="game-screen" class="screen">
+        <div class="combat-container">
+            <!-- Character HUD -->
+            <div class="player-hud">
+                <div class="hud-section">
+                    <div class="character-info">
+                        <span class="character-name" id="hud-name">Học Giả</span>
+                        <span class="character-level">Level <span id="hud-level">1</span></span>
+                        <span class="character-stage" id="hud-stage">Tân Thủ</span>
+                    </div>
+                    <div class="health-bar-container">
+                        <div class="bar-label">HP</div>
+                        <div class="health-bar">
+                            <div class="health-fill" id="health-fill"></div>
+                        </div>
+                        <span class="bar-value" id="health-text">100/100</span>
+                    </div>
+                    <div class="exp-bar-container">
+                        <div class="bar-label">EXP</div>
+                        <div class="exp-bar">
+                            <div class="exp-fill" id="exp-fill"></div>
+                        </div>
+                        <span class="bar-value" id="exp-text">0/100</span>
+                    </div>
+                </div>
+                <div class="hud-section">
+                    <div class="stat-display">
+                        <div class="stat-badge">
+                            <span class="stat-icon">✓</span>
+                            <span class="stat-value" id="correct-count">0</span>
+                        </div>
+                        <div class="stat-badge">
+                            <span class="stat-icon">✗</span>
+                            <span class="stat-value" id="wrong-count">0</span>
+                        </div>
+                        <div class="stat-badge">
+                            <span class="stat-icon">⭐</span>
+                            <span class="stat-value" id="score-display">0</span>
+                        </div>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Question Boss Display -->
+            <div class="boss-container">
+                <div class="boss-card" id="boss-card">
+                    <div class="boss-header">
+                        <h3 class="boss-name">Thử Thách Tri Thức</h3>
+                        <span class="question-number" id="question-number">Câu 1/15</span>
+                    </div>
+                    <div class="boss-body">
+                        <div class="timer-display" id="timer-display">
+                            <div class="timer-circle">
+                                <svg class="timer-svg" viewBox="0 0 100 100">
+                                    <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                                    <circle class="timer-progress" id="timer-progress" cx="50" cy="50" r="45"></circle>
+                                </svg>
+                                <div class="timer-text" id="timer-text">30</div>
+                            </div>
+                        </div>
+                        <div class="question-text-container">
+                            <p class="question-text" id="question-text">Câu hỏi sẽ xuất hiện ở đây...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Answer Options -->
+            <div class="answers-grid" id="answers-container">
+                <button class="answer-card" data-answer="A">
+                    <span class="answer-label">A</span>
+                    <span class="answer-text" id="answer-a-text">Đáp án A</span>
+                </button>
+                <button class="answer-card" data-answer="B">
+                    <span class="answer-label">B</span>
+                    <span class="answer-text" id="answer-b-text">Đáp án B</span>
+                </button>
+                <button class="answer-card" data-answer="C">
+                    <span class="answer-label">C</span>
+                    <span class="answer-text" id="answer-c-text">Đáp án C</span>
+                </button>
+                <button class="answer-card" data-answer="D">
+                    <span class="answer-label">D</span>
+                    <span class="answer-text" id="answer-d-text">Đáp án D</span>
+                </button>
+                </div>
+
+            <!-- Combat Effects -->
+            <div id="combat-effects"></div>
+                </div>
+            </div>
+            
+    <!-- Explanation Screen -->
+    <div id="explanation-screen" class="screen">
+        <div class="explanation-container">
+            <div class="explanation-header">
+                <h2 id="explanation-title">Giải Thích</h2>
+                <button id="close-explanation" class="btn btn-secondary">Tiếp Theo</button>
+            </div>
+            <div class="explanation-content">
+                <div id="explanation-media-container">
+                    <!-- Video or Image will be inserted here -->
+                </div>
+                <div class="explanation-text-container">
+                    <h3 id="explanation-question">Câu hỏi</h3>
+                    <p id="explanation-text">Giải thích sẽ hiển thị ở đây...</p>
+                    <div id="explanation-knowledge" class="knowledge-gain">
+                        <div class="knowledge-icon">📚</div>
+                        <p>Bạn đã nâng cấp tri thức của mình!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victory-screen" class="screen">
+        <div class="victory-container">
+            <div class="victory-content">
+                <div class="victory-animation">
+                    <div class="victory-icon">📚</div>
+                    <h1 class="victory-title">NÂNG CẤP TRI THỨC!</h1>
+                </div>
+                <div class="wisdom-quote">
+                    <div class="quote-icon">💡</div>
+                    <p class="quote-text" id="wisdom-quote-text">"Tri thức là kho báu vô tận, mỗi câu hỏi là một chìa khóa mở ra cánh cửa hiểu biết mới."</p>
+                    <p class="quote-author">- Trí Tuệ Cổ Nhân</p>
+                </div>
+                <div class="victory-stats">
+                    <div class="victory-stat-card">
+                        <div class="stat-icon-large">⭐</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Điểm Số</div>
+                            <div class="stat-number" id="victory-score">0</div>
+                        </div>
+                    </div>
+                    <div class="victory-stat-card">
+                        <div class="stat-icon-large">✓</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Câu Đúng</div>
+                            <div class="stat-number" id="victory-correct">0/17</div>
+                        </div>
+                    </div>
+                    <div class="victory-stat-card">
+                        <div class="stat-icon-large">📖</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Kiến Thức</div>
+                            <div class="stat-number" id="knowledge-level">Novice</div>
+                        </div>
+                    </div>
+                    <div class="victory-stat-card">
+                        <div class="stat-icon-large">🏆</div>
+                        <div class="stat-info">
+                            <div class="stat-label">Danh Hiệu</div>
+                            <div class="stat-number" id="victory-rank">Học Trò</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="knowledge-message">
+                    <p id="knowledge-message-text">Bạn đã hoàn thành hành trình tìm hiểu về chủ nghĩa Mác – Lênin. Tri thức bạn thu thập được sẽ là nền tảng vững chắc cho những hiểu biết sâu sắc hơn!</p>
+                </div>
+                <div class="victory-actions">
+                    <button id="play-again-btn" class="btn btn-hero">Học Lại</button>
+                    <button id="main-menu-btn" class="btn btn-secondary">Menu Chính</button>
+                </div>
+                </div>
+                </div>
+            </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameover-screen" class="screen">
+        <div class="gameover-container">
+            <div class="gameover-content">
+                <div class="gameover-icon">💀</div>
+                <h1 class="gameover-title">THẤT BẠI</h1>
+                <p class="gameover-text">Bạn đã hết thời gian hoặc điểm số quá thấp!</p>
+                <div class="gameover-stats" id="gameover-stats"></div>
+                <div class="gameover-actions">
+                    <button id="retry-btn" class="btn btn-hero">Thử Lại</button>
+                    <button id="gameover-menu-btn" class="btn btn-secondary">Menu Chính</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contribution Modal -->
+    <div id="contribution-modal" class="screen">
+        <div class="contribution-container">
+            <div class="contribution-content">
+                <div class="contribution-header">
+                    <h2>📝 Đóng Góp Câu Hỏi</h2>
+                    <button id="close-contribution-modal" class="btn-close-modal">&times;</button>
+                </div>
+                <div class="contribution-info">
+                    <p>Bạn có thể đóng góp câu hỏi mới cho game. Câu hỏi của bạn sẽ được admin xem xét và duyệt.</p>
+                </div>
+                <div id="contribution-forms" class="contribution-forms">
+                    <!-- Forms will be added here -->
+            </div>
+            <div class="contribution-actions">
+                    <button id="add-question-btn" class="btn btn-primary">
+                        <span class="btn-icon">➕</span>
+                        Thêm Câu Hỏi
+                    </button>
+                    <button id="submit-contributions-btn" class="btn btn-success">
+                        <span class="btn-icon">📤</span>
+                        Gửi Đóng Góp
+                    </button>
+                    <button id="cancel-contribution-btn" class="btn btn-secondary">
+                        <span class="btn-icon">❌</span>
+                        Hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/rpg-game.js"></script>
+    <script src="js/contribution.js"></script>
+</body>
+</html>
