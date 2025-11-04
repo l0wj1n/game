@@ -21,6 +21,11 @@
     --glow-color: rgba(99, 102, 241, 0.3);
     --shadow-color: rgba(0, 0, 0, 0.1);
     --border-color: #E2E8F0;
+    /* Safe area insets for notched devices */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
 }
 
 /* Theme Colors - Light Professional Themes */
@@ -229,6 +234,11 @@ body.intro-mode .video-overlay {
     width: 100%;
     height: 100%;
     padding: 20px;
+    /* Account for notches/status bars on mobile/tablet */
+    padding-top: calc(20px + var(--safe-top));
+    padding-bottom: calc(20px + var(--safe-bottom));
+    padding-left: calc(20px + var(--safe-left));
+    padding-right: calc(20px + var(--safe-right));
     overflow-y: auto;
     z-index: 10;
 }
