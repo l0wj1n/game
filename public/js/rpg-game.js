@@ -32,6 +32,28 @@ class RPGQuizGame {
             "Mỗi câu hỏi được trả lời là một viên gạch xây nên tòa lâu đài trí tuệ của bạn.",
             "Học tập là hành trình suốt đời, không có điểm kết thúc, chỉ có những đỉnh cao mới."
         ];
+        this.encouragementQuotes = [
+            "Sai cũng được – miễn là bạn không bỏ cuộc!",
+            "Mỗi lần vấp ngã là một bước tiến gần hơn đến hiểu biết.",
+            "Hít thở sâu, đọc kỹ lại đề – bạn làm được!",
+            "Không ai giỏi ngay từ đầu – kiên trì là chìa khóa.",
+            "Thử lại nào! Tri thức đến với người bền bỉ.",
+            "Sai để học – học để đúng.",
+            "Bạn đã đi được một đoạn rồi – tiếp tục thôi!",
+            "Một câu sai không định nghĩa bạn – tiếp tục chiến đấu!",
+            "Kiến thức luôn mỉm cười với người kiên nhẫn.",
+            "Đường đến Hiền Triết bắt đầu từ những bước nhỏ."
+        ];
+        
+        // Audio state
+        this.isMuted = (localStorage.getItem('game-muted') === 'true');
+        this.audio = {
+            intro: null,
+            gameplay: null,
+            explanation: null,
+            victory: null,
+            gameover: null
+        };
         
         // Character evolution stages
         this.characterStages = [
@@ -52,6 +74,7 @@ class RPGQuizGame {
         this.setupThemeSelector();
         this.loadTheme();
         this.loadQuestions();
+        this.setupAudio();
         // Start with intro mode (dark theme)
         document.body.classList.add('intro-mode');
         this.startLoading();
@@ -83,6 +106,8 @@ class RPGQuizGame {
             // Set default character info
             this.playerStats.name = this.playerStats.name?.trim() ? this.playerStats.name : 'Người Mới';
             this.playerStats.class = 'newbie';
+            // Dừng nhạc intro và phát nhạc gameplay
+            this.playMusic('gameplay');
             // Start game directly
             this.startGame();
         });
@@ -123,11 +148,15 @@ class RPGQuizGame {
         // Play again buttons
         document.getElementById('play-again-btn')?.addEventListener('click', () => {
             this.resetGame();
+            // Phát nhạc gameplay khi chơi lại
+            this.playMusic('gameplay');
             this.startGame();
         });
 
         document.getElementById('retry-btn')?.addEventListener('click', () => {
             this.resetGame();
+            // Phát nhạc gameplay khi retry
+            this.playMusic('gameplay');
             this.startGame();
         });
 
@@ -137,6 +166,8 @@ class RPGQuizGame {
             // Return to intro mode (dark theme)
             document.body.classList.add('intro-mode');
             this.showScreen('intro-screen');
+            // Phát lại nhạc intro khi quay về menu
+            this.playMusic('intro');
         });
 
         document.getElementById('gameover-menu-btn')?.addEventListener('click', () => {
@@ -144,6 +175,8 @@ class RPGQuizGame {
             // Return to intro mode (dark theme)
             document.body.classList.add('intro-mode');
             this.showScreen('intro-screen');
+            // Phát lại nhạc intro khi quay về menu
+            this.playMusic('intro');
         });
 
         // Video control
@@ -152,6 +185,80 @@ class RPGQuizGame {
             video.addEventListener('loadeddata', () => {
                 video.play().catch(e => console.log('Video autoplay prevented:', e));
             });
+        }
+
+        // Sound toggle
+        const soundBtn = document.getElementById('sound-toggle');
+        if (soundBtn) {
+            const refreshIcon = () => {
+                soundBtn.textContent = this.isMuted ? '🔇' : '🔈';
+                soundBtn.classList.toggle('muted', this.isMuted);
+            };
+            refreshIcon();
+            soundBtn.addEventListener('click', () => {
+                this.isMuted = !this.isMuted;
+                localStorage.setItem('game-muted', String(this.isMuted));
+                this.updateVolumes();
+                refreshIcon();
+            });
+        }
+    }
+
+    setupAudio() {
+        // Logic nhạc:
+        // - Intro: Phát nhạc intro khi vào intro screen
+        // - Sau khi nhấn "Bắt đầu hành trình" → phát nhạc gameplay
+        // - Khi chọn đáp án (đúng/sai) → KHÔNG đổi nhạc, giữ nhạc gameplay
+        // - Khi xem giải thích → KHÔNG đổi nhạc, giữ nhạc gameplay
+        // - Khi thắng game → phát nhạc victory
+        // - Khi thua game → phát nhạc gameover (động lực)
+        const tracks = {
+            // Intro: Nhạc ambient nhẹ nhàng, tạo không khí bắt đầu hành trình tri thức
+            intro: 'https://files.catbox.moe/8bswry.mp3',
+            
+            // Gameplay: Nhạc nền khi đang trả lời câu hỏi (phát sau khi nhấn "Bắt đầu hành trình")
+            gameplay: 'https://files.catbox.moe/3knyhz.mp3',
+            
+            // Explanation: Không sử dụng (không phát nhạc khi xem giải thích)
+            explanation: 'https://files.catbox.moe/590wca.mp3',
+            
+            // Victory: Nhạc chiến thắng khi hoàn thành game
+            victory: 'https://files.catbox.moe/8bswry.mp3',
+            
+            // Gameover: Nhạc động lực, cổ vũ bản thân khi thua game
+            gameover: 'https://files.catbox.moe/590wca.mp3'
+        };
+
+        this.audio.intro = new Audio(tracks.intro);
+        this.audio.gameplay = new Audio(tracks.gameplay);
+        this.audio.explanation = new Audio(tracks.explanation);
+        this.audio.victory = new Audio(tracks.victory);
+        this.audio.gameover = new Audio(tracks.gameover);
+
+        this.audio.intro.loop = true;
+        this.audio.gameplay.loop = true;
+        this.audio.explanation.loop = true;
+        this.audio.victory.loop = false;
+        this.audio.gameover.loop = true;
+
+        this.updateVolumes();
+    }
+
+    updateVolumes() {
+        const base = this.isMuted ? 0 : 0.25;
+        Object.values(this.audio).forEach(a => { if (a) a.volume = base; });
+    }
+
+    stopAllMusic() {
+        Object.values(this.audio).forEach(a => { if (a) { a.pause(); a.currentTime = 0; } });
+    }
+
+    playMusic(kind) {
+        this.stopAllMusic();
+        const track = this.audio[kind];
+        if (track) {
+            this.updateVolumes();
+            track.play().catch(() => {});
         }
     }
 
@@ -254,6 +361,8 @@ class RPGQuizGame {
                 clearInterval(interval);
                 setTimeout(() => {
                     this.showScreen('intro-screen');
+                    // Phát nhạc intro khi vào intro screen
+                    this.playMusic('intro');
                 }, 500);
             }
             if (progressBar) progressBar.style.width = progress + '%';
@@ -336,6 +445,7 @@ class RPGQuizGame {
         
         this.showScreen('game-screen');
         this.loadQuestion();
+        // Nhạc gameplay đã được phát khi nhấn "Bắt đầu hành trình", không cần phát lại ở đây
     }
 
     updateStageHUD() {
@@ -504,6 +614,7 @@ class RPGQuizGame {
             const damage = 15;
             this.playerStats.hp = Math.max(0, this.playerStats.hp - damage);
             this.showDamageNumber(`-${damage} HP`, '#EF4444', this.getRandomPosition());
+            this.maybeShowEncouragement();
             
             if (this.playerStats.hp <= 0) {
                 setTimeout(() => this.endGame(false), 1500);
@@ -542,57 +653,10 @@ class RPGQuizGame {
                 `Đáp án đúng là ${question.correctAnswer}. ${question.answers[question.correctAnswer.charCodeAt(0) - 65]}`);
         textElement.textContent = explanation;
 
-        // Clear and add media (video or image)
-        mediaContainer.innerHTML = '';
-        
-        // Priority: Video first, then Image
-        if (question.explanationVideo && question.explanationVideo.trim() !== '') {
-            const video = document.createElement('video');
-            video.src = question.explanationVideo.startsWith('http') || question.explanationVideo.startsWith('/') 
-                ? question.explanationVideo 
-                : question.explanationVideo;
-            video.controls = true;
-            video.autoplay = false;
-            video.style.width = '100%';
-            video.style.maxHeight = '400px';
-            video.style.borderRadius = '10px';
-            video.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
-            video.onerror = function() {
-                // Fallback to image if video fails
-                if (question.explanationImage && question.explanationImage.trim() !== '') {
-                    video.style.display = 'none';
-                    loadExplanationImage(question.explanationImage);
-                }
-            };
-            mediaContainer.appendChild(video);
-        } else if (question.explanationImage && question.explanationImage.trim() !== '') {
-            loadExplanationImage(question.explanationImage);
-        } else {
-            // Default knowledge icon if no media
-            const defaultIcon = document.createElement('div');
-            defaultIcon.style.textAlign = 'center';
-            defaultIcon.style.padding = '40px';
-            defaultIcon.style.width = '100%';
-            defaultIcon.innerHTML = '<div style="font-size: 80px;">📚</div><p style="margin-top: 15px; color: var(--text-secondary); font-size: 1rem;">Hãy đọc kỹ giải thích để hiểu rõ hơn!</p>';
-            mediaContainer.appendChild(defaultIcon);
-        }
-        
-        function loadExplanationImage(imageSrc) {
-            const img = document.createElement('img');
-            img.src = imageSrc.startsWith('http') || imageSrc.startsWith('/') 
-                ? imageSrc 
-                : imageSrc;
-            img.style.width = '100%';
-            img.style.maxHeight = '400px';
-            img.style.objectFit = 'contain';
-            img.style.borderRadius = '10px';
-            img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
-            img.alt = 'Giải thích hình ảnh';
-            img.onerror = function() {
-                img.style.display = 'none';
-            };
+        // Chỉ dùng phần giải thích chữ, ẩn vùng media
+        if (mediaContainer) {
             mediaContainer.innerHTML = '';
-            mediaContainer.appendChild(img);
+            mediaContainer.style.display = 'none';
         }
 
         // Show knowledge gain message
@@ -601,6 +665,7 @@ class RPGQuizGame {
             isCorrect ? 'Bạn đã nâng cấp tri thức của mình!' : 'Hãy xem giải thích để nâng cao hiểu biết!';
 
         // Show explanation screen
+        // KHÔNG đổi nhạc, giữ nhạc gameplay khi xem giải thích
         this.showScreen('explanation-screen');
     }
 
@@ -625,6 +690,7 @@ class RPGQuizGame {
         const damage = 20;
         this.playerStats.hp = Math.max(0, this.playerStats.hp - damage);
         this.showDamageNumber(`-${damage} HP (Hết thời gian!)`, '#EF4444', this.getRandomPosition());
+        this.maybeShowEncouragement();
 
         // Show correct answer
         const question = this.questions[this.currentQuestionIndex];
@@ -753,6 +819,7 @@ class RPGQuizGame {
             setTimeout(() => {
                 this.showScreen('victory-screen');
             }, 1000);
+            this.playMusic('victory');
         } else {
             // Show game over screen
             const gameoverStats = document.getElementById('gameover-stats');
@@ -771,12 +838,73 @@ class RPGQuizGame {
                         <strong>${totalTime}s</strong>
                     </div>
                 `;
+                // Add encouragement line below stats
+                const encour = document.createElement('div');
+                encour.id = 'gameover-encouragement';
+                encour.textContent = this.getEncouragementMessage(true);
+                encour.style.marginTop = '14px';
+                encour.style.textAlign = 'center';
+                encour.style.color = 'var(--text-primary, #e5e7eb)';
+                encour.style.fontWeight = '600';
+                encour.style.fontSize = '1rem';
+                gameoverStats.parentElement?.insertBefore(encour, gameoverStats.nextSibling);
             }
             
             setTimeout(() => {
                 this.showScreen('gameover-screen');
             }, 1000);
+            this.playMusic('gameover');
         }
+    }
+
+    maybeShowEncouragement() {
+        // Show when many wrong answers or low HP
+        const lowHp = this.playerStats.hp <= Math.max(20, Math.floor(this.playerStats.maxHp * 0.25));
+        const frequentWrong = this.playerStats.wrong >= 2 && this.playerStats.wrong % 2 === 0;
+        if (!lowHp && !frequentWrong) return;
+        const message = this.getEncouragementMessage(false);
+        this.showToast(message);
+    }
+
+    getEncouragementMessage(isGameOver) {
+        if (isGameOver) {
+            return "Thất bại chỉ là tạm thời. Mỗi lần thử lại là một lần mạnh mẽ hơn!";
+        }
+        const idx = Math.floor(Math.random() * this.encouragementQuotes.length);
+        return this.encouragementQuotes[idx];
+    }
+
+    showToast(text) {
+        const toast = document.createElement('div');
+        toast.textContent = text;
+        toast.style.position = 'fixed';
+        toast.style.left = '50%';
+        toast.style.bottom = '32px';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.maxWidth = '90vw';
+        toast.style.padding = '10px 14px';
+        toast.style.borderRadius = '12px';
+        toast.style.background = 'rgba(17, 24, 39, 0.85)';
+        toast.style.color = '#F9FAFB';
+        toast.style.fontWeight = '600';
+        toast.style.fontSize = '14px';
+        toast.style.boxShadow = '0 8px 24px rgba(0,0,0,0.35)';
+        toast.style.backdropFilter = 'blur(8px)';
+        toast.style.zIndex = '9999';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 200ms ease, transform 200ms ease';
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(-6px)';
+        });
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            setTimeout(() => toast.remove(), 250);
+        }, 2200);
     }
 
     async submitRanking(time) {
