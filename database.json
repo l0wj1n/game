@@ -215,13 +215,13 @@
   "rankings": [
     {
       "name": "Người Mới",
-      "score": 1669,
-      "time": 81,
-      "correct": 13,
+      "score": 1041,
+      "time": 109,
+      "correct": 7,
       "total": 15,
       "difficulty": "normal",
-      "id": "1762530641122",
-      "timestamp": "2025-11-07T15:50:41.124Z",
+      "id": "1762545265153",
+      "timestamp": "2025-11-07T19:54:25.153Z",
       "ip": "::1"
     }
   ],

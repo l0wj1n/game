@@ -49,6 +49,13 @@
                     <p class="typing-text">Mỗi câu trả lời đúng sẽ mang lại cho bạn kinh nghiệm và sức mạnh.</p>
                     <p class="typing-text">Hãy chứng minh bạn xứng đáng với danh hiệu <strong>Bậc Thầy Triết Học</strong>!</p>
                 </div>
+                <!-- GIF Chúc may mắn -->
+                <div class="intro-gif-container">
+                    <img src="/assets/images/intro.gif" 
+                         alt="Chúc may mắn" 
+                         class="intro-gif" />
+                    <p class="intro-luck-text">✨ Chúc May Mắn! ✨</p>
+                </div>
                 <button id="start-journey-btn" class="btn btn-hero">Bắt Đầu Hành Trình</button>
                 <button id="theme-selector-btn" class="btn btn-theme">🎨 Chọn Màu Sắc</button>
                 <button id="contribute-btn" class="btn btn-secondary" style="margin-top: 15px;">📝 Đóng Góp Câu Hỏi</button>
@@ -219,19 +226,26 @@
                         <span class="character-level">Level <span id="hud-level">1</span></span>
                         <span class="character-stage" id="hud-stage">Tân Thủ</span>
                     </div>
-                    <div class="health-bar-container">
-                        <div class="bar-label">HP</div>
-                        <div class="health-bar">
-                            <div class="health-fill" id="health-fill"></div>
+                    <div class="bars-with-gif-container">
+                        <div class="bars-container">
+                            <div class="health-bar-container">
+                                <div class="bar-label">HP</div>
+                                <div class="health-bar">
+                                    <div class="health-fill" id="health-fill"></div>
+                                </div>
+                                <span class="bar-value" id="health-text">100/100</span>
+                            </div>
+                            <div class="exp-bar-container">
+                                <div class="bar-label">EXP</div>
+                                <div class="exp-bar">
+                                    <div class="exp-fill" id="exp-fill"></div>
+                                </div>
+                                <span class="bar-value" id="exp-text">0/100</span>
+                            </div>
                         </div>
-                        <span class="bar-value" id="health-text">100/100</span>
-                    </div>
-                    <div class="exp-bar-container">
-                        <div class="bar-label">EXP</div>
-                        <div class="exp-bar">
-                            <div class="exp-fill" id="exp-fill"></div>
+                        <div class="bars-gif-wrapper">
+                            <img src="/assets/images/phan2.gif" alt="Character GIF" class="bars-gif" />
                         </div>
-                        <span class="bar-value" id="exp-text">0/100</span>
                     </div>
                 </div>
                 <div class="hud-section">
@@ -296,6 +310,11 @@
                 </button>
                 </div>
 
+            <!-- Answer Result GIF -->
+            <div id="answer-result-gif-container" class="answer-result-gif-container">
+                <img id="answer-result-gif" src="" alt="Result" class="answer-result-gif" />
+            </div>
+
             <!-- Combat Effects -->
             <div id="combat-effects"></div>
                 </div>
@@ -309,8 +328,8 @@
                 <button id="close-explanation" class="btn btn-secondary">Tiếp Theo</button>
             </div>
             <div class="explanation-content">
-                <div id="explanation-media-container">
-                    <!-- Video or Image will be inserted here -->
+                <div id="explanation-media-container" class="explanation-gif-container">
+                    <img src="/assets/images/question-explain.gif" alt="Explanation GIF" class="explanation-gif" />
                 </div>
                 <div class="explanation-text-container">
                     <h3 id="explanation-question">Câu hỏi</h3>
@@ -329,6 +348,7 @@
         <div class="victory-container">
             <div class="victory-content">
                 <div class="victory-animation">
+                    <img src="/assets/images/end-game.gif" alt="Victory GIF" class="victory-gif" />
                     <div class="victory-icon">📚</div>
                     <h1 class="victory-title">NÂNG CẤP TRI THỨC!</h1>
                 </div>
@@ -382,6 +402,7 @@
     <div id="gameover-screen" class="screen">
         <div class="gameover-container">
             <div class="gameover-content">
+                <img src="/assets/images/end-game.gif" alt="Game Over GIF" class="gameover-gif" />
                 <div class="gameover-icon">💀</div>
                 <h1 class="gameover-title">THẤT BẠI</h1>
                 <p class="gameover-text">Bạn đã hết thời gian hoặc điểm số quá thấp!</p>

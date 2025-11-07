@@ -10,7 +10,7 @@ class RPGQuizGame {
             hp: 100,
             maxHp: 100,
             exp: 0,
-            expToNext: 100,
+            expToNext: 50, // Giảm từ 100 xuống 50 để dễ level up hơn và đảm bảo đủ EXP với 15 câu hỏi
             correct: 0,
             wrong: 0,
             score: 0
@@ -55,6 +55,18 @@ class RPGQuizGame {
             gameover: null
         };
         
+        // Sound effects
+        this.sounds = {
+            select: null,      // Âm thanh khi chọn đáp án
+            correct: null,     // Âm thanh khi đáp án đúng
+            wrong: null,       // Âm thanh khi đáp án sai
+            levelUp: null,     // Âm thanh khi nâng cấp level
+            countdown: null    // Âm thanh đếm ngược
+        };
+        
+        this.musicVolume = 0.25;  // Âm lượng nhạc nền
+        this.soundVolume = 0.6;   // Âm lượng hiệu ứng âm thanh
+        
         // Character evolution stages
         this.characterStages = [
             { minCorrect: 0,  title: 'Tân Thủ' },
@@ -69,16 +81,26 @@ class RPGQuizGame {
     }
 
     init() {
-        this.setupCanvas();
-        this.setupEventListeners();
-        this.setupThemeSelector();
-        this.loadTheme();
-        this.loadQuestions();
-        this.setupAudio();
-        // Start with intro mode (dark theme)
-        document.body.classList.add('intro-mode');
-        this.startLoading();
+        try {
+            this.setupCanvas();
+            this.setupEventListeners();
+            this.setupThemeSelector();
+            this.loadTheme();
+            this.setupAudio();
+            // Load questions asynchronously (don't block loading)
+            this.loadQuestions().catch(error => {
+                console.error('Failed to load questions:', error);
+            });
+            // Start with intro mode (dark theme)
+            document.body.classList.add('intro-mode');
+            this.startLoading();
+        } catch (error) {
+            console.error('Error initializing game:', error);
+            // Show error message to user
+            alert('Có lỗi xảy ra khi khởi tạo game. Vui lòng refresh trang.');
+        }
     }
+
 
 
     setupCanvas() {
@@ -241,12 +263,78 @@ class RPGQuizGame {
         this.audio.victory.loop = false;
         this.audio.gameover.loop = true;
 
+        // Setup sound effects
+        try {
+            // Load file âm thanh thực tế
+            this.sounds.select = new Audio('/assets/sounds/Am_thanh_lua_chon_Dung.mp3');
+            this.sounds.correct = new Audio('/assets/sounds/Am_thanh_lua_chon_Dung.mp3');
+            this.sounds.wrong = new Audio('/assets/sounds/Am_thanh_tra_loi_sai.mp3');
+            this.sounds.levelUp = new Audio('/assets/sounds/Am_thanh_nang_cap_cap_do_tro_choi.mp3');
+            this.sounds.countdown = new Audio('/assets/sounds/demnguoc.mp3');
+            
+            this.sounds.select.loop = false;
+            this.sounds.correct.loop = false;
+            this.sounds.wrong.loop = false;
+            this.sounds.levelUp.loop = false;
+            // Âm thanh đếm ngược sẽ được loop để phù hợp với 30 giây
+            this.sounds.countdown.loop = true;
+            
+            // Load metadata để biết độ dài file
+            this.sounds.countdown.addEventListener('loadedmetadata', () => {
+                // Nếu file ngắn hơn 30 giây, sẽ loop tự động
+                // Nếu file dài hơn 30 giây, sẽ dừng sau 30 giây
+            });
+        } catch (error) {
+            console.warn('Could not initialize sound effects:', error);
+            // Tạo dummy objects để tránh lỗi
+            this.sounds.select = { play: () => Promise.resolve(), currentTime: 0, volume: 0, loop: false };
+            this.sounds.correct = { play: () => Promise.resolve(), currentTime: 0, volume: 0, loop: false };
+            this.sounds.wrong = { play: () => Promise.resolve(), currentTime: 0, volume: 0, loop: false };
+            this.sounds.levelUp = { play: () => Promise.resolve(), currentTime: 0, volume: 0, loop: false };
+            this.sounds.countdown = { play: () => Promise.resolve(), pause: () => {}, currentTime: 0, volume: 0, loop: false };
+        }
+
         this.updateVolumes();
     }
 
     updateVolumes() {
-        const base = this.isMuted ? 0 : 0.25;
-        Object.values(this.audio).forEach(a => { if (a) a.volume = base; });
+        const musicVol = this.isMuted ? 0 : this.musicVolume;
+        const soundVol = this.isMuted ? 0 : this.soundVolume;
+        
+        // Cập nhật âm lượng nhạc nền
+        Object.values(this.audio).forEach(a => { if (a) a.volume = musicVol; });
+        
+        // Cập nhật âm lượng hiệu ứng (trừ levelUp có volume cao hơn, countdown có volume thấp hơn)
+        Object.entries(this.sounds).forEach(([key, s]) => { 
+            if (s && s.volume !== undefined) {
+                if (key === 'levelUp') {
+                    // Level up sound có volume cao hơn một chút
+                    s.volume = this.isMuted ? 0 : Math.min(this.soundVolume * 1.2, 1);
+                } else if (key === 'countdown') {
+                    // Countdown sound có volume thấp hơn để không làm phiền
+                    s.volume = this.isMuted ? 0 : (this.soundVolume * 0.4);
+                } else {
+                    s.volume = soundVol;
+                }
+            }
+        });
+    }
+    
+    // Tạm thời giảm nhạc nền khi phát âm thanh hiệu ứng
+    lowerMusicVolume() {
+        Object.values(this.audio).forEach(a => { 
+            if (a && !a.paused) {
+                a.volume = this.isMuted ? 0 : (this.musicVolume * 0.3);
+            }
+        });
+    }
+    
+    restoreMusicVolume() {
+        Object.values(this.audio).forEach(a => { 
+            if (a && !a.paused) {
+                a.volume = this.isMuted ? 0 : this.musicVolume;
+            }
+        });
     }
 
     stopAllMusic() {
@@ -372,6 +460,9 @@ class RPGQuizGame {
     async loadQuestions() {
         try {
             const response = await fetch('/api/questions');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             
             if (Array.isArray(data)) {
@@ -381,15 +472,22 @@ class RPGQuizGame {
                 }));
             } else if (data.questions) {
                 this.questions = data.questions;
+            } else if (data && typeof data === 'object') {
+                // Fallback: try to extract questions from any property
+                this.questions = Object.values(data).find(val => Array.isArray(val)) || [];
             }
             
             // Shuffle questions for variety
-            this.shuffleArray(this.questions);
+            if (this.questions.length > 0) {
+                this.shuffleArray(this.questions);
+            }
             
             console.log(`Loaded ${this.questions.length} questions`);
         } catch (error) {
             console.error('Error loading questions:', error);
-            alert('Không thể tải câu hỏi. Vui lòng thử lại!');
+            // Don't show alert during loading, just log error
+            // Game can still proceed with empty questions array
+            this.questions = [];
         }
     }
 
@@ -513,14 +611,50 @@ class RPGQuizGame {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }
+        
+        // Dừng âm thanh đếm ngược cũ nếu có
+        if (this.sounds.countdown && !this.sounds.countdown.paused) {
+            this.sounds.countdown.pause();
+            this.sounds.countdown.currentTime = 0;
+        }
 
         let timeLeft = this.timeLimit;
         const timerText = document.getElementById('timer-text');
         const timerProgress = document.getElementById('timer-progress');
         const circumference = 2 * Math.PI * 45;
+        
+        // Phát âm thanh đếm ngược
+        if (this.sounds.countdown && this.sounds.countdown.src && this.sounds.countdown.src !== '') {
+            try {
+                // Giảm nhạc nền một chút khi phát âm thanh đếm ngược
+                this.lowerMusicVolume();
+                this.sounds.countdown.currentTime = 0;
+                this.sounds.countdown.volume = this.isMuted ? 0 : (this.soundVolume * 0.4); // Volume thấp hơn để không làm phiền
+                this.sounds.countdown.play().catch(err => {
+                    console.warn('Could not play countdown sound:', err);
+                });
+                
+                // Dừng âm thanh đếm ngược sau 30 giây (hoặc khi file kết thúc nếu ngắn hơn)
+                setTimeout(() => {
+                    if (this.sounds.countdown && !this.sounds.countdown.paused) {
+                        this.sounds.countdown.pause();
+                        this.sounds.countdown.currentTime = 0;
+                        this.restoreMusicVolume();
+                    }
+                }, this.timeLimit * 1000);
+            } catch (error) {
+                console.warn('Error playing countdown sound:', error);
+            }
+        }
 
         const updateTimer = () => {
             if (timeLeft <= 0) {
+                // Dừng âm thanh đếm ngược khi hết thời gian
+                if (this.sounds.countdown && !this.sounds.countdown.paused) {
+                    this.sounds.countdown.pause();
+                    this.sounds.countdown.currentTime = 0;
+                    this.restoreMusicVolume();
+                }
                 this.handleTimeOut();
                 return;
             }
@@ -552,6 +686,18 @@ class RPGQuizGame {
 
         this.selectedAnswer = answer;
         
+        // Phát âm thanh khi chọn đáp án (nếu có file)
+        if (this.sounds.select && this.sounds.select.src && this.sounds.select.src !== '') {
+            try {
+                this.lowerMusicVolume();
+                this.sounds.select.currentTime = 0;
+                this.sounds.select.play().catch(() => {});
+                setTimeout(() => this.restoreMusicVolume(), 300);
+            } catch (error) {
+                console.warn('Error playing select sound:', error);
+            }
+        }
+        
         // Visual feedback với hiệu ứng xoay
         document.querySelectorAll('.answer-card').forEach(card => {
             card.classList.remove('selected');
@@ -572,9 +718,19 @@ class RPGQuizGame {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }
+        
+        // Dừng âm thanh đếm ngược khi trả lời
+        if (this.sounds.countdown && !this.sounds.countdown.paused) {
+            this.sounds.countdown.pause();
+            this.sounds.countdown.currentTime = 0;
+            this.restoreMusicVolume();
+        }
 
         const question = this.questions[this.currentQuestionIndex];
         const isCorrect = this.selectedAnswer === question.correctAnswer;
+
+        // Phát âm thanh và hiển thị GIF kết quả
+        this.showAnswerResult(isCorrect);
 
         // Show correct/incorrect
         document.querySelectorAll('.answer-card').forEach(card => {
@@ -591,17 +747,19 @@ class RPGQuizGame {
         // Update stats
         if (isCorrect) {
             this.playerStats.correct++;
-            // Base EXP
-            let gainedExp = 20;
+            // Base EXP - tăng lên để đảm bảo đủ EXP với 15 câu hỏi để đạt nhân vật cuối cùng
+            // Với 15 câu hỏi, cần đủ EXP để level up nhiều lần và đạt "Nhà Hiền Triết" (15 câu đúng)
+            // Tính toán: 15 câu x 50 EXP = 750 EXP, đủ để level up đủ lần
+            let gainedExp = 50; // Tăng để đảm bảo đủ EXP
             // Bonus for trick challenge
             if (this.currentChallenge === 'trick') {
-                gainedExp += 10;
+                gainedExp += 20; // Tăng bonus
             }
             this.playerStats.exp += gainedExp;
             this.playerStats.score += 100;
-            this.showDamageNumber('+20 EXP', '#8B5CF6', this.getRandomPosition());
-            if (gainedExp > 20) {
-                this.showDamageNumber(`+${gainedExp - 20} EXP (Thử thách)`, '#7C3AED', this.getRandomPosition());
+            this.showDamageNumber(`+${gainedExp} EXP`, '#8B5CF6', this.getRandomPosition());
+            if (gainedExp > 50) {
+                this.showDamageNumber(`+${gainedExp - 50} EXP (Thử thách)`, '#7C3AED', this.getRandomPosition());
             }
             this.showDamageNumber('+100', '#10B981', this.getRandomPosition());
             
@@ -653,10 +811,9 @@ class RPGQuizGame {
                 `Đáp án đúng là ${question.correctAnswer}. ${question.answers[question.correctAnswer.charCodeAt(0) - 65]}`);
         textElement.textContent = explanation;
 
-        // Chỉ dùng phần giải thích chữ, ẩn vùng media
+        // Hiển thị GIF giải thích (đã có trong HTML)
         if (mediaContainer) {
-            mediaContainer.innerHTML = '';
-            mediaContainer.style.display = 'none';
+            mediaContainer.style.display = 'flex';
         }
 
         // Show knowledge gain message
@@ -715,10 +872,26 @@ class RPGQuizGame {
 
     levelUp() {
         this.playerStats.level++;
-        this.playerStats.exp = 0;
-        this.playerStats.expToNext = Math.floor(this.playerStats.expToNext * 1.5);
+        // Giữ lại phần EXP dư thừa thay vì reset về 0
+        const excessExp = this.playerStats.exp - this.playerStats.expToNext;
+        this.playerStats.exp = excessExp;
+        // Tăng EXP cần thiết cho level tiếp theo (nhưng không quá cao)
+        // Giảm hệ số để đảm bảo với 15 câu hỏi có thể đạt đủ level
+        this.playerStats.expToNext = Math.floor(this.playerStats.expToNext * 1.25); // Giảm từ 1.3 xuống 1.25
         this.playerStats.maxHp += 20;
         this.playerStats.hp = this.playerStats.maxHp;
+        
+        // Phát âm thanh level up
+        if (this.sounds.levelUp && this.sounds.levelUp.src && this.sounds.levelUp.src !== '') {
+            try {
+                this.lowerMusicVolume();
+                this.sounds.levelUp.currentTime = 0;
+                this.sounds.levelUp.play().catch(() => {});
+                setTimeout(() => this.restoreMusicVolume(), 2000);
+            } catch (error) {
+                console.warn('Error playing level up sound:', error);
+            }
+        }
         
         this.showDamageNumber('LEVEL UP!', '#F59E0B', { x: window.innerWidth / 2, y: window.innerHeight / 2 });
         this.createExplosionEffect(window.innerWidth / 2, window.innerHeight / 2);
@@ -946,7 +1119,7 @@ class RPGQuizGame {
             hp: 100,
             maxHp: 100,
             exp: 0,
-            expToNext: 100,
+            expToNext: 50, // Giảm từ 100 xuống 50 để dễ level up hơn và đảm bảo đủ EXP với 15 câu hỏi
             correct: 0,
             wrong: 0,
             score: 0
@@ -1067,6 +1240,52 @@ class RPGQuizGame {
         this.ctx.globalAlpha = 1;
 
         requestAnimationFrame(() => this.animateParticles());
+    }
+
+    showAnswerResult(isCorrect) {
+        const container = document.getElementById('answer-result-gif-container');
+        const gifImg = document.getElementById('answer-result-gif');
+        
+        if (!container || !gifImg) return;
+
+        // Phát âm thanh kết quả (nếu có file)
+        if (isCorrect) {
+            if (this.sounds.correct && this.sounds.correct.src && this.sounds.correct.src !== '') {
+                try {
+                    this.lowerMusicVolume();
+                    this.sounds.correct.currentTime = 0;
+                    this.sounds.correct.play().catch(() => {});
+                    setTimeout(() => this.restoreMusicVolume(), 800);
+                } catch (error) {
+                    console.warn('Error playing correct sound:', error);
+                }
+            }
+            gifImg.src = '/assets/images/traloidung.gif';
+        } else {
+            if (this.sounds.wrong && this.sounds.wrong.src && this.sounds.wrong.src !== '') {
+                try {
+                    this.lowerMusicVolume();
+                    this.sounds.wrong.currentTime = 0;
+                    this.sounds.wrong.play().catch(() => {});
+                    setTimeout(() => this.restoreMusicVolume(), 800);
+                } catch (error) {
+                    console.warn('Error playing wrong sound:', error);
+                }
+            }
+            gifImg.src = '/assets/images/traloisai.gif';
+        }
+
+        // Hiển thị GIF
+        container.style.display = 'flex';
+        container.classList.add('show');
+
+        // Ẩn GIF sau 2 giây
+        setTimeout(() => {
+            container.classList.remove('show');
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 500);
+        }, 2000);
     }
 }
 
